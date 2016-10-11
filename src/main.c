@@ -51,9 +51,23 @@ int main(void)
   int i = 0;
 
   uint32_t  AD_value = 0;
+  int j,l,k = 0;
 
    GPIO_InitTypeDef GPIO_InitStructure;
    ADC_InitTypeDef ADC_InitStructure;
+
+   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA,ENABLE);
+
+    GPIO_InitTypeDef mojaSt;
+
+    mojaSt.GPIO_Mode=GPIO_Mode_OUT;
+    mojaSt.GPIO_OType=GPIO_OType_PP;
+    mojaSt.GPIO_PuPd=GPIO_PuPd_UP;
+    mojaSt.GPIO_Speed=GPIO_Speed_40MHz;
+    mojaSt.GPIO_Pin=GPIO_Pin_5;
+
+    GPIO_Init(GPIOA,&mojaSt);
+
 
    /* Enable GPIO clock */
    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);//Opraviù a upraviù
@@ -130,6 +144,19 @@ int main(void)
 	  ADC_SoftwareStartConv(ADC1);
 	  while(!ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC)){}
 	  AD_value=ADC_GetConversionValue(ADC1);
+
+      AD_value=AD_value*100;
+
+	 		  	 		  for (l=0;l<5000+AD_value;l++)
+	 		  	 		  {
+	 		  	 		    GPIO_SetBits(GPIOA,GPIO_Pin_5);
+	 		  	 		  }
+	 		  	 		  for(k=0;k<5000+AD_value;k++)
+	 		  	 		  {
+	 		  	 			  GPIO_ResetBits(GPIOA,GPIO_Pin_5);
+	 		  	 		  }
+
+
 	i++;
   }
   return 0;
